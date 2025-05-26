@@ -47,7 +47,7 @@ class DeviceUpdateController {
         const { updateFile } = req.files;
 
         const extension = path.extname(updateFile.name);
-        const fileName = uuidv4() + extension;
+        const fileName = uuid.v4() + extension;
         const tmpPath = path.resolve(__dirname, '..', 'uploads', fileName);
 
         // Сохраняем файл во временную директорию
