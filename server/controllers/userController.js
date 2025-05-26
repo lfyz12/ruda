@@ -50,7 +50,12 @@ class UserController {
             await tokenController.saveToken(userDto.id, tokens.refreshToken)
 
 
-            res.cookie('refreshToken', tokens.refreshToken, { maxAge: 10 * 24 * 60 * 60 * 1000, httpOnly: true})
+            res.cookie('refreshToken', tokens.refreshToken, {
+                maxAge: 10 * 24 * 60 * 60 * 1000, // 10 дней
+                httpOnly: true,                  // недоступна из JS
+                secure: true,                    // только по HTTPS
+                sameSite: 'none',                // обязательно для cross-site cookies
+            });
             return res.json({...tokens, User: {...userDto}})
             // res.cookie('accessToken', tokens.accessToken, {maxAge: 60 * 60 * 1000, httpOnly: true})
             // return res.json({ user: { ...userDto } })
@@ -90,7 +95,12 @@ class UserController {
 
             await tokenController.saveToken(userDto.id, tokens.refreshToken)
 
-            res.cookie('refreshToken', tokens.refreshToken, { maxAge: 10 * 24 * 60 * 60 * 1000, httpOnly: true })
+            res.cookie('refreshToken', tokens.refreshToken, {
+                maxAge: 10 * 24 * 60 * 60 * 1000, // 10 дней
+                httpOnly: true,                  // недоступна из JS
+                secure: true,                    // только по HTTPS
+                sameSite: 'none',                // обязательно для cross-site cookies
+            });
             //res.cookie('accessToken', tokens.accessToken, {maxAge: 60 * 60 * 1000, httpOnly: true})
 
             //return res.json({ user: userDto })
