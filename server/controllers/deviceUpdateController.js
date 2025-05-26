@@ -41,35 +41,43 @@ class DeviceUpdateController {
         }
     }
 
-    async create(req, res, next) {
-        try {
-            const { deviceId, explain } = req.body;
-            const { updateFile } = req.files;
+   async create(req, res, next) {
+    try {
+        const { deviceId, explain } = req.body;
+        const { updateFile } = req.files;
 
-            // Генерация уникального имени для файла с фото
-            const extension = path.extname(updateFile.name); // import path from 'path'
+        const extension = path.extname(updateFile.name);
+        const fileName = uuidv4() + extension;
+        const tmpPath = path.resolve(__dirname, '..', 'uploads', fileName);
 
+        // Сохраняем файл во временную директорию
+        await updateFile.mv(tmpPath);
 
-// Генерируем новое уникальное имя с тем же расширением
-            const fileName = uuid.v4() + extension;
-            const tmpPath = path.resolve(__dirname, '..', 'uploads', fileName)
-            // Сохранение файла в директорию 'static'
-            await updateFile.mv(tmpPath);
-            const result = await cloudinary.uploader.upload(tmpPath);
-            fs.unlinkSync(tmpPath);
+        // Загружаем в Cloudinary как raw-файл
+        const result = await cloudinary.uploader.upload(tmpPath, {
+            resource_type: 'raw',
+            public_id: `device-updates/${fileName}` // опционально: вложенная папка
+        });
 
-            // Сохранение файла в директорию 'static'
-            updateFile.mv(path.resolve(__dirname, '..', 'uploads', fileName));
-            // Проверим, существует ли устройство
-            const device = await Device.findByPk(deviceId);
-            if (!device) return res.status(404).json({ error: 'Device not found' });
+        // Удаляем временный файл
+        fs.unlinkSync(tmpPath);
 
-            const newUpdate = await DeviceUpdate.create({ deviceId, explain, updateFile: result.secure_url });
-            res.status(201).json(newUpdate);
-        } catch (err) {
-            next(ApiError.badRequest(err.message))
-        }
+        // Проверим, существует ли устройство
+        const device = await Device.findByPk(deviceId);
+        if (!device) return res.status(404).json({ error: 'Device not found' });
+
+        // Сохраняем ссылку на Cloudinary
+        const newUpdate = await DeviceUpdate.create({
+            deviceId,
+            explain,
+            updateFile: result.secure_url
+        });
+
+        res.status(201).json(newUpdate);
+    } catch (err) {
+        next(ApiError.badRequest(err.message));
     }
+}
 
     async update(req, res, next) {
         try {
