@@ -16,6 +16,10 @@ const AdminPanel = observer(() => {
         role: ""
     });
 
+    const delDep = async (id: number) => {
+        await departmentStore.deleteDepartment(id)
+    }
+
     useEffect(() => {
         departmentStore.fetchDepartments();
         employeeStore.getAll();
@@ -83,6 +87,7 @@ const AdminPanel = observer(() => {
                                 className="p-3 bg-orange-50 rounded-md border border-orange-100 flex justify-between items-center"
                             >
                                 <span className="text-orange-900">{dep.name}</span>
+                                <button onClick={() => delDep(dep.id)}>Удалить</button>
                             </li>
                         ))}
                     </ul>
