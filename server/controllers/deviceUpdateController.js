@@ -54,10 +54,12 @@ class DeviceUpdateController {
         await updateFile.mv(tmpPath);
 
         // Загружаем в Cloudinary как raw-файл
-        const result = await cloudinary.uploader.upload(tmpPath, {
+       const result = await cloudinary.uploader.upload(tmpPath, {
             resource_type: 'raw',
-            public_id: `device-updates/${fileName}` // опционально: вложенная папка
+            public_id: `device-updates/${fileName}`,
+            type: 'upload' // 👈 гарантирует публичный доступ
         });
+
 
         // Удаляем временный файл
         fs.unlinkSync(tmpPath);
