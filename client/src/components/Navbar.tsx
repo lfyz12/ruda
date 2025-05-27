@@ -22,7 +22,7 @@ const Navbar = () => {
             {/* Заголовок */}
             <div className="mb-10">
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-orange-400 to-amber-600 bg-clip-text text-transparent">
-                    Рудодобыча
+                    Краснотурьинск Полиметалл
                 </h1>
                 <p className="text-sm text-gray-600 mt-1">предприятие</p>
             </div>
