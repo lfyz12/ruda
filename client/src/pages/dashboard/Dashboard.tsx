@@ -100,7 +100,7 @@ const Dashboard: React.FC = observer(() => {
                 <div className="bg-white p-6 rounded-xl shadow">
                     <h2 className="text-lg font-semibold text-gray-800 mb-4">Статус сотрудников</h2>
                     <div className="flex justify-center">
-                        <PieChart width={400} height={300}>
+                        <PieChart width={500} height={300}>
                             <Pie
                                 data={data.employeeStatus}
                                 dataKey="value"
